@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Praveen Kr Pandey — AI Copywriting System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1B3E;
+    --navy2: #111F48;
+    --teal: #00B4A6;
+    --teal2: #00d4c4;
+    --gold: #F5C518;
+    --white: #F7F8FC;
+    --muted: #8A94A8;
+    --card: #131E3A;
+    --border: rgba(0,180,166,0.18);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── noise texture overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* ── teal glow top ── */
+  .glow-top {
+    position: fixed;
+    top: -200px;
+    right: -100px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0,180,166,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,27,62,0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 28px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--teal);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .nav-links a:hover { color: var(--white); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 96px 0 72px;
+    position: relative;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--teal);
+    background: rgba(0,180,166,0.1);
+    border: 1px solid rgba(0,180,166,0.3);
+    padding: 5px 14px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(40px, 7vw, 64px);
+    line-height: 1.08;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--teal);
+  }
+  .hero-sub {
+    font-size: 16px;
+    color: var(--muted);
+    margin: 20px 0 36px;
+    max-width: 540px;
+    line-height: 1.65;
+  }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 44px;
+  }
+  .meta-pill {
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    border: 1px solid rgba(138,148,168,0.25);
+    padding: 5px 14px;
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+  }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--teal);
+    color: var(--navy);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 13px 28px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .btn-primary:hover { background: var(--teal2); transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 13px 28px;
+    border-radius: 3px;
+    border: 1px solid rgba(247,248,252,0.2);
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .btn-secondary:hover { border-color: rgba(247,248,252,0.5); transform: translateY(-1px); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border) 30%, var(--border) 70%, transparent);
+    margin: 64px 0;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 40px;
+    max-width: 520px;
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-bottom: 64px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .stat {
+    background: var(--card);
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 38px;
+    color: var(--teal);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label { font-size: 12px; color: var(--muted); letter-spacing: 0.02em; }
+
+  /* ── ABOUT CARD ── */
+  .about-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 36px 40px;
+    margin-bottom: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .about-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--teal);
+  }
+  .about-card p { color: rgba(247,248,252,0.85); line-height: 1.75; margin-bottom: 16px; }
+  .about-card p:last-child { margin-bottom: 0; }
+  .about-card strong { color: var(--white); font-weight: 600; }
+
+  /* ── SYSTEM OVERVIEW ── */
+  .system-section { margin-bottom: 64px; }
+  .layer-cards { display: flex; flex-direction: column; gap: 16px; }
+  .layer-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 26px 28px;
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 20px;
+    align-items: start;
+    transition: border-color 0.2s;
+  }
+  .layer-card:hover { border-color: rgba(0,180,166,0.4); }
+  .layer-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--teal);
+    opacity: 0.5;
+    line-height: 1;
+    padding-top: 4px;
+  }
+  .layer-title { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+  .layer-tech {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+  .layer-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  /* ── SKILLS GRID ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 64px;
+  }
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 22px 24px;
+  }
+  .skill-title { font-weight: 600; font-size: 14px; margin-bottom: 10px; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    background: rgba(138,148,168,0.1);
+    border: 1px solid rgba(138,148,168,0.15);
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── EXPERIENCE ── */
+  .exp-list { display: flex; flex-direction: column; gap: 28px; margin-bottom: 64px; }
+  .exp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .exp-card::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .exp-role { font-weight: 600; font-size: 16px; }
+  .exp-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    background: rgba(0,180,166,0.1);
+    border: 1px solid rgba(0,180,166,0.2);
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .exp-company { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .exp-bullets li {
+    font-size: 14px;
+    color: rgba(247,248,252,0.75);
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .exp-bullets li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--teal);
+    font-size: 12px;
+    top: 2px;
+  }
+  .exp-bullets strong { color: var(--white); font-weight: 500; }
+
+  /* ── PROJECTS ── */
+  .projects-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 64px; }
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 26px 30px;
+    transition: border-color 0.2s;
+  }
+  .project-card:hover { border-color: rgba(245,197,24,0.35); }
+  .project-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    background: rgba(245,197,24,0.08);
+    border: 1px solid rgba(245,197,24,0.2);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .project-title { font-weight: 600; font-size: 16px; margin-bottom: 10px; }
+  .project-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+  /* ── DECK PREVIEW ── */
+  .deck-section { margin-bottom: 64px; }
+  .deck-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .deck-header {
+    background: rgba(0,180,166,0.08);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .deck-header-title { font-weight: 600; font-size: 15px; }
+  .deck-header-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .deck-slides {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+  .slide-thumb {
+    background: var(--navy2);
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    text-align: center;
+  }
+  .slide-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--teal);
+    letter-spacing: 0.1em;
+  }
+  .slide-name { font-size: 11px; color: var(--muted); line-height: 1.3; }
+  .deck-footer {
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .deck-footer-note { font-size: 13px; color: var(--muted); }
+
+  /* ── CTA SECTION ── */
+  .cta-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 52px 48px;
+    text-align: center;
+    margin-bottom: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 50%;
+    transform: translateX(-50%);
+    width: 400px; height: 200px;
+    background: radial-gradient(ellipse, rgba(0,180,166,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+  .cta-section p { color: var(--muted); font-size: 15px; margin-bottom: 32px; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .contact-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+  .contact-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    background: rgba(138,148,168,0.08);
+    border: 1px solid rgba(138,148,168,0.15);
+    padding: 7px 16px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0;
+    text-align: center;
+  }
+  footer p { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero > * { animation: fadeUp 0.6s ease both; }
+  .hero .hero-tag  { animation-delay: 0.05s; }
+  .hero h1         { animation-delay: 0.15s; }
+  .hero .hero-sub  { animation-delay: 0.25s; }
+  .hero .hero-meta { animation-delay: 0.32s; }
+  .hero .cta-row   { animation-delay: 0.4s; }
+
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .deck-slides { grid-template-columns: repeat(2, 1fr); }
+    .cta-section { padding: 36px 24px; }
+    .about-card { padding: 28px 24px; }
+    nav .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow-top"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">Vyzant</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#system">System</a>
+      <a href="#experience">Experience</a>
+      <a href="#deck">Deck</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="wrap">
+  <section class="hero" id="top">
+    <div class="hero-tag">Available for Collaboration</div>
+    <h1>Praveen Kr Pandey<br><em>AI Copywriting</em><br>Systems Builder</h1>
+    <p class="hero-sub">I build agentic AI systems that learn an influencer's exact voice and generate human-sounding content at scale — so creators never lose their authenticity while growing faster.</p>
+    <div class="hero-meta">
+      <span class="meta-pill">New Delhi · Open to Remote</span>
+      <span class="meta-pill">5+ Yrs Performance Marketing</span>
+      <span class="meta-pill">CrewAI · LangGraph · n8n</span>
+      <span class="meta-pill">IIT Madras Certified</span>
+    </div>
+    <div class="cta-row">
+      <a class="btn-primary" href="https://drive.google.com/file/d/1ViS8GcxtCmWzKOogs8GgeOA5OzdvK6NT/view?usp=sharing" target="_blank">View Resume (PDF)</a>
+      <a class="btn-secondary" href="#deck">See the System Deck</a>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-num">35%</div>
+      <div class="stat-label">CPL Reduction via Agentic AI</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">15h</div>
+      <div class="stat-label">Manual Work Saved Per Week</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">Years Multichannel Marketing</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">About</div>
+    <h2 class="section-title">Built for this exact role</h2>
+    <p class="section-sub">Performance marketer turned agentic AI architect — here's why this combination matters for you.</p>
+
+    <div class="about-card">
+      <p>I'm a <strong>Marketing Automation Architect</strong> with 5+ years running multichannel campaigns across Google, Meta, and LinkedIn — and in the last 6 months I've gone deep into <strong>agentic AI orchestration</strong>. That combination is rare: I understand what makes content perform AND I can build the systems that produce it autonomously.</p>
+      <p>I've architected a full <strong>AI-powered social media copywriting system</strong> specifically designed for digital nomad creators. It ingests your existing content, extracts your unique voice — tone, phrases, hook structure, even the way you end posts — and uses that as the foundation for every piece of content it generates.</p>
+      <p>The output isn't AI-sounding content. It's <strong>your voice, scaled</strong>. With a human-in-the-loop approval step so you stay in control.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SYSTEM -->
+  <section id="system" class="system-section">
+    <div class="section-label">The System</div>
+    <h2 class="section-title">Three-layer automation pipeline</h2>
+    <p class="section-sub">Built specifically for a digital nomad influencer across Instagram, LinkedIn, Twitter/X, YouTube, and Threads.</p>
+
+    <div class="layer-cards">
+      <div class="layer-card">
+        <div class="layer-num">01</div>
+        <div>
+          <div class="layer-title">Voice Intelligence Layer</div>
+          <div class="layer-tech">Python · Pinecone · CrewAI Analyst Agent</div>
+          <div class="layer-desc">Ingests your existing Instagram captions and LinkedIn posts, extracts your tone, vocabulary, hook structure, signature phrases and content patterns. Builds a living Voice DNA document that gets injected into every generation prompt. Updated weekly as you post more.</div>
+        </div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">02</div>
+        <div>
+          <div class="layer-title">Multi-Agent Content Generation</div>
+          <div class="layer-tech">CrewAI · LangGraph · RAG over post embeddings</div>
+          <div class="layer-desc">LangGraph orchestrates four specialist agents: caption writer, hashtag researcher, hook variant generator (3 A/B options), and CTA optimizer. A brand QA agent checks every draft. A humanisation agent removes AI tells and adds your natural rhythm before anything reaches review.</div>
+        </div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">03</div>
+        <div>
+          <div class="layer-title">Distribution & Feedback Loop</div>
+          <div class="layer-tech">n8n · Platform APIs · Analytics Aggregator</div>
+          <div class="layer-desc">You review via Slack. She approves via Telegram/WhatsApp — one tap. n8n auto-schedules and posts across all 5 platforms. Analytics flow back into the trend brief weekly, so the system learns what performs and improves every cycle.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label">Skills</div>
+    <h2 class="section-title">Technical toolkit</h2>
+    <p class="section-sub">The exact stack needed to build and run this system.</p>
+
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-title">AI & Automation</div>
+        <div class="skill-tags">
+          <span class="tag">CrewAI</span>
+          <span class="tag">LangGraph</span>
+          <span class="tag">Agno</span>
+          <span class="tag">n8n</span>
+          <span class="tag">LLM Prompting</span>
+          <span class="tag">RAG</span>
+          <span class="tag">Pinecone</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-title">Performance Marketing</div>
+        <div class="skill-tags">
+          <span class="tag">Google Ads</span>
+          <span class="tag">Meta Ads</span>
+          <span class="tag">LinkedIn Ads</span>
+          <span class="tag">CRO</span>
+          <span class="tag">A/B Testing</span>
+          <span class="tag">Funnel Building</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-title">Data & Analytics</div>
+        <div class="skill-tags">
+          <span class="tag">GA4</span>
+          <span class="tag">GTM Server-side</span>
+          <span class="tag">Looker Studio</span>
+          <span class="tag">Consent Mode v2</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-title">Content Systems</div>
+        <div class="skill-tags">
+          <span class="tag">Voice DNA extraction</span>
+          <span class="tag">Hook writing</span>
+          <span class="tag">Caption strategy</span>
+          <span class="tag">Hashtag research</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-label">Experience</div>
+    <h2 class="section-title">Where I've applied this</h2>
+    <p class="section-sub">5 years of building systems that make marketing measurably better.</p>
+
+    <div class="exp-list">
+      <div class="exp-card">
+        <div class="exp-header">
+          <div>
+            <div class="exp-role">Performance Marketing & Automation Lead</div>
+            <div class="exp-company">Vyzant · Remote</div>
+          </div>
+          <span class="exp-period">Present</span>
+        </div>
+        <ul class="exp-bullets">
+          <li>Architected <strong>autonomous campaign agents</strong> using CrewAI for 24/7 account health checks — saving 15 hours/week of manual oversight</li>
+          <li>Engineered <strong>custom n8n pipelines</strong> for Meta Ads → CRM lead syncing, reducing CPL by 35%</li>
+          <li>Deployed <strong>Agentic AI workflows</strong> for ad copy iteration and sentiment analysis — 20–40% improvement in landing page conversion</li>
+          <li>Configured full-funnel tracking via GTM and GA4 feeding high-fidelity data into AI-driven bidding algorithms</li>
+        </ul>
+      </div>
+
+      <div class="exp-card">
+        <div class="exp-header">
+          <div>
+            <div class="exp-role">Senior Executive, Digital Marketing</div>
+            <div class="exp-company">Sannam S4 Group · New Delhi (Hybrid)</div>
+          </div>
+          <span class="exp-period">11/2022 – 03/2023</span>
+        </div>
+        <ul class="exp-bullets">
+          <li>Generated high-quality leads for international education via Google and Meta Ads — <strong>25% increase in lead volume, 30% CPL reduction</strong></li>
+          <li>Boosted student engagement 75% and grew social reach 50% through tailored content + audience management</li>
+          <li>Launched targeted email campaigns achieving <strong>40% open rate and 25% CTR</strong></li>
+        </ul>
+      </div>
+
+      <div class="exp-card">
+        <div class="exp-header">
+          <div>
+            <div class="exp-role">Digital Marketing Executive</div>
+            <div class="exp-company">Trajectory Education · New Delhi</div>
+          </div>
+          <span class="exp-period">01/2021 – 08/2022</span>
+        </div>
+        <ul class="exp-bullets">
+          <li>Ran IIT-JEE lead generation campaigns on Meta and Google — consistent qualified lead flow at improved CPL</li>
+          <li>Launched segmented email workflows — <strong>20% CTR, 30% increase in form submissions</strong></li>
+          <li>A/B tested ad creatives improving conversion rate by 25%</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">Projects</div>
+    <h2 class="section-title">AI systems I've shipped</h2>
+    <p class="section-sub">Real implementations, not prototypes.</p>
+
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-tag">CrewAI · n8n · 2025</div>
+        <div class="project-title">Autonomous Lead Generation Engine</div>
+        <div class="project-desc">Multi-agent system using CrewAI to automate prospect research and personalised ad-copy generation for real estate and automotive sectors. Built a human-in-the-loop validation step in n8n ensuring 100% brand alignment before deployment. Lowered CPL by 35% by using Agentic AI to identify high-value audience segments.</div>
+      </div>
+      <div class="project-card">
+        <div class="project-tag">Ongoing · n8n · Sentiment AI</div>
+        <div class="project-title">Persona-Centric UGC Automation Engine</div>
+        <div class="project-desc">Architecting a workflow to produce high-end UGC-style content tailored to specific audience psychological profiles. Integrating real-time sentiment analysis into n8n automation to refine audience personas based on live ad performance data — bridging data science and creative strategy.</div>
+      </div>
+      <div class="project-card">
+        <div class="project-tag">This Proposal · All 5 Platforms</div>
+        <div class="project-title">AI Social Media Copywriting System</div>
+        <div class="project-desc">End-to-end voice-intelligent content pipeline built for a digital nomad influencer. Learns her voice from existing posts using NLP + embeddings, generates platform-specific copy via multi-agent CrewAI pipeline, and distributes via n8n with human-in-the-loop approval. Full 4-week implementation roadmap ready.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- DECK -->
+  <section id="deck" class="deck-section">
+    <div class="section-label">System Deck</div>
+    <h2 class="section-title">Full presentation</h2>
+    <p class="section-sub">11 slides covering the complete system architecture, voice intelligence layer, and 4-week roadmap.</p>
+
+    <div class="deck-card">
+      <div class="deck-header">
+        <div>
+          <div class="deck-header-title">AI-Powered Social Media Copywriting System</div>
+          <div class="deck-header-sub">Voice Intelligence · Multi-Agent Generation · Human-in-the-Loop · 11 slides</div>
+        </div>
+        <a class="btn-primary" href="https://docs.google.com/presentation/d/1f1swZXe41GpcnpIDGoh1ZoMY76wKhqlF/edit?usp=sharing&ouid=117308991901030365817&rtpof=true&sd=true" target="_blank" style="white-space:nowrap">Download Deck</a>
+      </div>
+      <div class="deck-slides">
+        <div class="slide-thumb"><span class="slide-num">01</span><span class="slide-name">Cover & Overview</span></div>
+        <div class="slide-thumb"><span class="slide-num">02</span><span class="slide-name">The Problem</span></div>
+        <div class="slide-thumb"><span class="slide-num">03</span><span class="slide-name">System Architecture</span></div>
+        <div class="slide-thumb"><span class="slide-num">04</span><span class="slide-name">Voice Intelligence Layer</span></div>
+        <div class="slide-thumb"><span class="slide-num">05</span><span class="slide-name">Generation Pipeline</span></div>
+        <div class="slide-thumb"><span class="slide-num">06</span><span class="slide-name">Approval Flow</span></div>
+        <div class="slide-thumb"><span class="slide-num">07</span><span class="slide-name">Tech Stack</span></div>
+        <div class="slide-thumb"><span class="slide-num">08</span><span class="slide-name">Voice DNA Deep Dive</span></div>
+        <div class="slide-thumb"><span class="slide-num">09</span><span class="slide-name">Before vs After</span></div>
+        <div class="slide-thumb"><span class="slide-num">10</span><span class="slide-name">Implementation Roadmap</span></div>
+        <div class="slide-thumb"><span class="slide-num">11</span><span class="slide-name">Next Steps</span></div>
+      </div>
+      <div class="deck-footer">
+        <span class="deck-footer-note">Built with CrewAI · LangGraph · n8n · Python · Pinecone</span>
+        <a class="btn-secondary" href="https://docs.google.com/presentation/d/1f1swZXe41GpcnpIDGoh1ZoMY76wKhqlF/edit?usp=sharing&ouid=117308991901030365817&rtpof=true&sd=true" target="_blank">Open Full Deck →</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CTA -->
+  <section id="contact">
+    <div class="cta-section">
+      <h2>Let's build this together</h2>
+      <p>I've already designed the full system. We can be generating her first AI-assisted posts within 4 weeks.</p>
+      <div class="contact-row">
+        <span class="contact-item">vyzantmarketing@gmail.com</span>
+        <span class="contact-item">+91-9942157338</span>
+        <span class="contact-item">linkedin.com/in/vyzant</span>
+      </div>
+      <div class="cta-row" style="justify-content:center">
+        <a class="btn-primary" href="mailto:vyzantmarketing@gmail.com">Send me an email</a>
+        <a class="btn-secondary" href="https://drive.google.com/file/d/1ViS8GcxtCmWzKOogs8GgeOA5OzdvK6NT/view?usp=sharing" target="_blank">View Resume</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <p>Praveen Kr Pandey · Marketing Automation Architect · Performance Marketing & Agentic AI Specialist</p>
+  </div>
+</footer>
+
+</body>
+</html>
